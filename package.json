@@ -1,5 +1,5 @@
 {
-  "name": "homebridge-dummy-contact-switch",
+  "name": "homebridge-dummy-switch-controlled-sensors",
   "version": "0.9.0",
   "description": "Dummy switch + contact pairs for Homebridge: https://github.com/nfarina/homebridge",
   "license": "ISC",
@@ -8,10 +8,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/NorthernMan54/homebridge-dummy-contact.git"
+    "url": "git://github.com/justjam2013/homebridge-dummy-switch-controlled-sensors.git"
   },
   "bugs": {
-    "url": "http://github.com/NorthernMan54/homebridge-dummy-contact/issues"
+    "url": "https://github.com/justjam2013/homebridge-dummy-switch-controlled-sensors/issues"
   },
   "engines": {
     "node": ">=16.13.0",
