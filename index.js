@@ -50,10 +50,10 @@ function DummySwitchControlledSensor(log, config) {
     var cachedState = this.storage.getItemSync(this.name);
     if ((cachedState === undefined) || (cachedState === false)) {
       this._switch.setCharacteristic(Characteristic.On, false);
-      this.state = false;
+      this._contact.setCharacteristic(Characteristic.ContactSensorState, 0);
     } else {
       this._switch.setCharacteristic(Characteristic.On, true);
-      this.state = true;
+      this._contact.setCharacteristic(Characteristic.ContactSensorState, 1);
     }
   }
 }
@@ -78,17 +78,6 @@ DummySwitchControlledSensor.prototype._setOn = function(on, callback, context) {
   if (!this.disableLogging) {
     this.log(msg);
   }
-
-  this._contact.setCharacteristic(Characteristic.ContactSensorState, (on ? 1 : 0));
-
-  // if (this.state === on) {
-  //   this._switch.getCharacteristic(Characteristic.On)
-  //     .emit('change', {
-  //       oldValue: on,
-  //       newValue: on,
-  //       context: context
-  //     });
-  // }
 
   if (on && !this.reverse && !this.stateful) {
     this.timerObject = setTimeout(function() {
