@@ -1,7 +1,6 @@
 # "Dummy Switches and Contact" Plugin
 
-This code is heavily based on the work of Nick Farina's [homebridge-dummy](https://github.com/nfarina/homebridge-dummy) accessory, and that of [NorthernMan54](https://github.com/NorthernMan54/) from whom I inherited this fork.
-
+This is a fork of [homebridge-dummy-contact](https://github.com/ecoen66/homebridge-dummy-contact), which appears to have been abandoned. This fork fixes the issue with the original plugin where "pluginAlias" conflicts with Nick Farina's [homebridge dummy](https://github.com/nfarina/homebridge-dummy), which it is a fork of. While it installs fine, it then shares it's config with homebridge-dummy and removing it will cause Homebridge to delete and add back all of the switches, causing all HomeKit scenes and automations using said switches to be deleted. Basically ... bad juju.
 
 Example config.json:
 
