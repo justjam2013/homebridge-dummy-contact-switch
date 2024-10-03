@@ -8,10 +8,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/justjam2013/homebridge-dummy-switch-controlled-sensors.git"
+    "url": "git://github.com/justjam2013/homebridge-dummy-switch-controlled-sensor.git"
   },
   "bugs": {
-    "url": "https://github.com/justjam2013/homebridge-dummy-switch-controlled-sensors/issues"
+    "url": "https://github.com/justjam2013/homebridge-dummy-switch-controlled-sensor/issues"
   },
   "engines": {
     "node": ">=16.13.0",
