@@ -1,4 +1,4 @@
-# "Dummy Switches and Contact" Plugin
+# "Dummy Switch Controlled Sensors" Plugin
 
 This is a fork of [homebridge-dummy-contact](https://github.com/ecoen66/homebridge-dummy-contact), which appears to have been abandoned. This fork fixes the issue with the original plugin where "pluginAlias" conflicts with Nick Farina's [homebridge dummy](https://github.com/nfarina/homebridge-dummy), which it is a fork of. While it installs fine, it then shares it's config with homebridge-dummy and removing it will cause Homebridge to delete and add back all of the switches, causing all HomeKit scenes and automations using said switches to be deleted. Basically ... bad juju.
 
@@ -65,6 +65,24 @@ You may also want to create a timed switch that turns itself off after being on 
 
 ```
 
+## Random Timed Switches
+
+You might want to create a switch that given a random time turns itself off.
+This can be achieved by enabling 'random'.
+Each time a non-stateful, random timed switch is triggered, the time is set to a random value between 0 and 'time' milliseconds.
+A random period within one hour is defined as follows in your config.json:
+
+```
+    "accessories": [
+        {
+          "accessory": "DummySwitch",
+          "name": "My Stateful Random Switch 1",
+          "time": 3600000,
+          "random": true
+        }
+    ]
+
+```
 
 ## This modified version of this Homebridge plugin creates an optional Contact Sensor to complement the switch.
 
