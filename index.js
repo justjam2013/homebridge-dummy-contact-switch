@@ -1,6 +1,7 @@
 "use strict";
 
 var Service, Characteristic, HomebridgeAPI;
+const { HomebridgeDummyVersion } = require('./package.json');
 
 module.exports = function(homebridge) {
   Service = homebridge.hap.Service;
