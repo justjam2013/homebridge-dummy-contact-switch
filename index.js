@@ -11,7 +11,7 @@ module.exports = function(homebridge) {
 };
 
 
-function DummySwitch(log, config) {
+function DummySwitchControlledSensor(log, config) {
   this.log = log;
   this.name = config.name;
   this.stateful = config.stateful;
@@ -19,6 +19,7 @@ function DummySwitch(log, config) {
   this.contact = config['contact'] || false;
   this.contactName = config.contactName || this.name;
   this.time = config.time ? config.time : 1000;
+  this.time = config.time ? config.time : 1000;		
   this.switch = config['switch'] || false;
   this.timerObject = null;
   this.debug = config['debug'] || false;
@@ -65,7 +66,7 @@ function DummySwitch(log, config) {
   }
 }
 
-DummySwitch.prototype.getServices = function() {
+DummySwitchControlledSensor.prototype.getServices = function() {
   if (this.contact) {
     return [this._service, this._contact, this._informationService];
   } else {
@@ -73,7 +74,7 @@ DummySwitch.prototype.getServices = function() {
   }
 };
 
-DummySwitch.prototype._setOn = function(on, callback, context) {
+DummySwitchControlledSensor.prototype._setOn = function(on, callback, context) {
   if (this.debug) {
   	this.log("Called to set switch to", on);
   }
