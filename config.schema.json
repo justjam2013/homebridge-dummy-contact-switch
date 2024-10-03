@@ -1,5 +1,5 @@
 {
-    "pluginAlias": "DummyContactSwitch",
+    "pluginAlias": "HomebridgeDummySwitchControlledSensors",
     "pluginType": "accessory",
     "singular": false,
     "schema": {
@@ -10,34 +10,11 @@
                 "type": "string",
                 "required": true
             },
-            "serial": {
-                "title": "Serial Number",
-                "type": "string",
-                "required": false
-            },
             "stateful": {
                 "title": "Stateful",
                 "type": "boolean",
                 "default": false,
                 "description": "The switch remains on instead of being automatically turned off."
-            },
-            "switch": {
-                "title": "Switch",
-                "type": "boolean",
-                "default": false,
-                "description": "The switch is shown as a Switch vs. a Lightbulb."
-            },
-            "contact": {
-                "title": "Contact",
-                "type": "boolean",
-                "default": false,
-                "description": "The switch includes a combined contact sensor."
-            },
-            "contactName": {
-                "title": "Contact Name",
-                "type": "string",
-                "default": "",
-                "description": "A name for the contact sensor. Defaults to the name of the switch"
             },
             "reverse": {
                 "title": "Reverse",
@@ -51,11 +28,29 @@
                 "default": 1000,
                 "description": "The switch will turn off after this number of milliseconds. Not used if the switch is stateful."
             },
-            "debug": {
-                "title": "Debug",
+            "random": {
+                "title": "Random",
                 "type": "boolean",
                 "default": false,
-                "description": "Enables additional logging."
+                "description": "Randomize the time until a switch turns off. Not used if the switch is stateful."
+            },
+            "contact": {
+                "title": "Contact",
+                "type": "boolean",
+                "default": false,
+                "description": "The switch includes a combined contact sensor."
+            },
+            "contactName": {
+                "title": "Contact Name",
+                "type": "string",
+                "default": "",
+                "description": "A name for the contact sensor. Defaults to the name of the switch."
+            },
+            "disableLogging": {
+                "title": "DisableLogging",
+                "type": "boolean",
+                "default": false,
+                "description": "No state change information (On/Off) will be logged."
             }
         }
     }
