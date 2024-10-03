@@ -1,5 +1,5 @@
 {
-    "pluginAlias": "HomebridgeDummySwitchControlledSensors",
+    "pluginAlias": "DummySwitchControlledSensors",
     "pluginType": "accessory",
     "singular": false,
     "schema": {
