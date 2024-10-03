@@ -34,12 +34,6 @@
                 "default": false,
                 "description": "Randomize the time until a switch turns off. Not used if the switch is stateful."
             },
-            "contact": {
-                "title": "Contact",
-                "type": "boolean",
-                "default": false,
-                "description": "The switch includes a combined contact sensor."
-            },
             "contactName": {
                 "title": "Contact Name",
                 "type": "string",
