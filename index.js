@@ -1,7 +1,7 @@
 "use strict";
 
 var Service, Characteristic, HomebridgeAPI;
-const { HomebridgeDummyVersion } = require('./package.json');
+const { HomebridgeDummySwitchControlledSensorVersion } = require('./package.json');
 
 module.exports = function(homebridge) {
   Service = homebridge.hap.Service;
@@ -16,29 +16,21 @@ function DummySwitchControlledSensor(log, config) {
   this.name = config.name;
   this.stateful = config.stateful;
   this.reverse = config.reverse;
-  this.contact = config['contact'] || false;
-  this.contactName = config.contactName || this.name;
   this.time = config.time ? config.time : 1000;
-  this.time = config.time ? config.time : 1000;		
-  this.switch = config['switch'] || false;
-  this.timerObject = null;
-  this.debug = config['debug'] || false;
-  this.serial = config["serial"] === undefined ? config["name"] : config["serial"];
-  
-	this._informationService = new Service.AccessoryInformation();
-	this._informationService
-			.setCharacteristic(Characteristic.Manufacturer, "DummySwitch")
-			.setCharacteristic(Characteristic.Model, "DummySwitch")
-			.setCharacteristic(Characteristic.SerialNumber, this.serial);
+  this.timer = null;
+  this.random = config.random;
+  this.contactName = config.contactName || this.name;
+  this.disableLogging = config.disableLogging;
 
+  this._switch = new Service.Switch(this.name);
+  this.modelString = "Dummy Switch";
 
-  if (this.switch) {
-    this._service = new Service.Switch(this.name);
-  } else {
-    this._service = new Service.Lightbulb(this.name);
-    this._service
-      .addCharacteristic(Characteristic.Brightness);
-  }
+  this.informationService = new Service.AccessoryInformation();
+  this.informationService
+      .setCharacteristic(Characteristic.Manufacturer, 'DummySwitchControlledSensor')
+      .setCharacteristic(Characteristic.Model, this.modelString)
+      .setCharacteristic(Characteristic.FirmwareRevision, HomebridgeDummySwitchControlledSensorVersion)
+      .setCharacteristic(Characteristic.SerialNumber, '1234567890');
 
   this._contact = new Service.ContactSensor(this.contactName);
 
@@ -49,82 +41,66 @@ function DummySwitchControlledSensor(log, config) {
     forgiveParseErrors: true
   });
 
-  this._service.getCharacteristic(Characteristic.On)
+  this._switch.getCharacteristic(Characteristic.On)
     .on('set', this._setOn.bind(this));
 
-  if (this.reverse) this._service.setCharacteristic(Characteristic.On, true);
+  if (this.reverse) this._switch.setCharacteristic(Characteristic.On, true);
 
   if (this.stateful) {
     var cachedState = this.storage.getItemSync(this.name);
     if ((cachedState === undefined) || (cachedState === false)) {
-      this._service.setCharacteristic(Characteristic.On, false);
+      this._switch.setCharacteristic(Characteristic.On, false);
       this.state = false;
     } else {
-      this._service.setCharacteristic(Characteristic.On, true);
+      this._switch.setCharacteristic(Characteristic.On, true);
       this.state = true;
     }
   }
 }
 
 DummySwitchControlledSensor.prototype.getServices = function() {
-  if (this.contact) {
-    return [this._service, this._contact, this._informationService];
-  } else {
-    return [this._service, this._informationService];
-  }
+  return [this._switch, this._contact, this._informationService];
 };
 
+function randomize(time) {
+  return Math.floor(Math.random() * (time + 1));
+}
+
 DummySwitchControlledSensor.prototype._setOn = function(on, callback, context) {
-  if (this.debug) {
-  	this.log("Called to set switch to", on);
+
+  var delay = this.random ? randomize(this.time) : this.time;
+  var msg = "Setting switch to " + on
+  if (this.random && !this.stateful) {
+    if (on && !this.reverse || !on && this.reverse) {
+      msg = msg + " (random delay " + delay + "ms)"
+    }
   }
-  if (this.contact) {
-    this._contact.setCharacteristic(Characteristic.ContactSensorState, (on ? 1 : 0));
+  if (!this.disableLogging) {
+    this.log(msg);
   }
 
-  if (this.state === on) {	
-    this._service.getCharacteristic(Characteristic.On)
-      .emit('change', {
-        oldValue: on,
-        newValue: on,
-        context: context
-      });
-  } else {
-	
-	  this.log("Setting switch to", on);
-	}
+  this._contact.setCharacteristic(Characteristic.ContactSensorState, (on ? 1 : 0));
 
-	if (on && !this.reverse && !this.stateful) {
-		if (this.timerObject) {
-			if (this.debug) {
-				this.log("Called to set state to On again.  Resetting timerObject.");
-			}
-			clearTimeout(this.timerObject);
-		} else {
-			if (this.debug) {
-				this.log("Called to set state to On again.  There is no timerObject.");
-			}			
-		}
-		this.timerObject = setTimeout(function() {
-			this._service.setCharacteristic(Characteristic.On, false);
-			this._contact.setCharacteristic(Characteristic.ContactSensorState, 0);
-		}.bind(this), this.time);
-	} else if (!on && this.reverse && !this.stateful) {
-		if (this.timerObject) {
-			if (this.debug) {
-				this.log("Called to set state to Off again.  Resetting timerObject.");
-			}
-			clearTimeout(this.timerObject);
-		} else {
-			if (this.debug) {
-				this.log("Called to set state to Off again.  There is no timerObject.");
-			}			
-		}
-		this.timerObject = setTimeout(function() {
-			this._service.setCharacteristic(Characteristic.On, true);
-			this._contact.setCharacteristic(Characteristic.ContactSensorState, 1);
-		}.bind(this), this.time);
-	}
+  // if (this.state === on) {
+  //   this._switch.getCharacteristic(Characteristic.On)
+  //     .emit('change', {
+  //       oldValue: on,
+  //       newValue: on,
+  //       context: context
+  //     });
+  // }
+
+  if (on && !this.reverse && !this.stateful) {
+    this.timerObject = setTimeout(function() {
+      this._switch.setCharacteristic(Characteristic.On, false);
+      this._contact.setCharacteristic(Characteristic.ContactSensorState, 0);
+    }.bind(this), this.time);
+  } else if (!on && this.reverse && !this.stateful) {
+    this.timerObject = setTimeout(function() {
+      this._switch.setCharacteristic(Characteristic.On, true);
+      this._contact.setCharacteristic(Characteristic.ContactSensorState, 1);
+    }.bind(this), this.time);
+  }
 
   if (this.stateful) {
     this.storage.setItemSync(this.name, on);
